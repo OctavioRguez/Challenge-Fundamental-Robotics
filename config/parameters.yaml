@@ -1,0 +1,10 @@
+signal:
+  type: ""
+  time: -1.0
+  amplitude: 5.0
+  freq : 0.5
+  square:
+    up_limit: 5.0
+    down_limit: -5.0
+  step:
+    value: 5.0

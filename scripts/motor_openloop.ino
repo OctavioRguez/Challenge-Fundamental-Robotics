@@ -1,11 +1,11 @@
-//Import Basic Libraries
+// Import Basic Libraries
 #include <ros.h>
 #include <std_msgs/Float32.h>
 
-//Declare ROS node
+// Declare ROS node
 ros::NodeHandle nh;
 
-//Declare variables and GPIO
+// Declare variables and GPIO
 const int PinM1 = 4;
 const int PinM2 = 2;
 
@@ -35,7 +35,7 @@ float RPS = 0.0;
 float angVelocity = 0.0;
 int signVelocity = 1;
 
-//Callback function for the subscription
+// Callback function for the subscription
 void callback(const std_msgs::Float32& msg){
   pwm = msg.data * 100;
   if (pwm < 0){
@@ -49,7 +49,7 @@ void callback(const std_msgs::Float32& msg){
   }
 }
 
-//Publisher & Subscribers
+// Publisher & Subscribers
 std_msgs::Float32 speedMotor;
 ros::Subscriber<std_msgs::Float32> sub("motor_input", &callback);
 ros::Publisher pub("motor_output", &speedMotor);
@@ -67,14 +67,14 @@ void setup()
   pinMode(EncA2, INPUT);
   pinMode(EncB2, INPUT);
 
-  //Initialize the pwm
+  // Initialize the pwm
   ledcSetup(Channel, freq, resolution);
   ledcAttachPin(PinM1, Channel);
   ledcAttachPin(PinM2, Channel);
 
   attachInterrupt(digitalPinToInterrupt(EncA1), pulse, RISING);
 
-  //Manage ROS node
+  // Manage ROS node
   nh.initNode();
   nh.advertise(pub);
   nh.subscribe(sub);
@@ -82,12 +82,12 @@ void setup()
 
 void loop()
 {
-  //Call functions
+  // Call functions
   pwm_duty_cycle();
   directions();
   speedEncoders();
 
-  //Publish to topics
+  // Publish to topics
   speedMotor.data = angVelocity * signVelocity;
   Serial.println(speedMotor.data);
   pub.publish(&speedMotor);
@@ -97,27 +97,27 @@ void loop()
 
 void pwm_duty_cycle()
 {
-  //Map the received pwm
+  // Map the received pwm
   int dutyCycle = map(pwm, 0.0, 100.0, 0, 255);
   ledcWrite(Channel, dutyCycle);
 }
 
 void directions()
 {
-  //Control the direction for the encoders
+  // Control the direction for the encoders
   if (reverse){
-    //ccw
+    // CCW
     digitalWrite(M1_IN1, LOW);
     digitalWrite(M1_IN2, HIGH);
-    //cw
+    // CW
     digitalWrite(M2_IN1, LOW);
     digitalWrite(M2_IN2, HIGH);
   }
   else{
-    //cw
+    // CW
     digitalWrite(M1_IN1, HIGH);
     digitalWrite(M1_IN2, LOW);
-    //ccw
+    // CCW
     digitalWrite(M2_IN1, HIGH);
     digitalWrite(M2_IN2, LOW);
   }
@@ -135,13 +135,6 @@ void speedEncoders(){
     
     RPS = ((float)count / PPR) / gears;
     angVelocity = 2*3.1416*RPS;
-
-    //Serial.print("Motor speed (RPS): ");
-    //Serial.println(RPS);
-
-    //Serial.print("Motor speed (rad/s): ");
-    //Serial.println(angVelocity);
-    
     lastTime = currTime;
   }
 }

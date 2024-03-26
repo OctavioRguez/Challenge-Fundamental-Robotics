@@ -1,17 +1,18 @@
 <?xml version="1.0" ?>
-
 <launch>
-
+    <!-- Parameter files -->
     <rosparam file = "$(find final_motor)/config/parameters.yaml" command = "load" />
     <rosparam file = "$(find final_motor)/config/params_control.yaml" command = "load" />
 
+    <!-- ROS Nodes -->
     <node name="control" pkg="final_motor" type="control.py" output="screen" launch-prefix="gnome-terminal --command" />
     <node name="input" pkg="final_motor" type="input.py" output="screen" launch-prefix="gnome-terminal --command" />
 
+    <!-- Arduino Code -->
     <node name="motor" pkg="rosserial_python" type="serial_node.py">
-    <param name="port"	type="string"	value="/dev/ttyUSB0"/>   
+        <param name="port"	type="string"	value="/dev/ttyUSB0"/>   
     </node>
 
+    <!-- Data Plot -->
     <node name="rqt_plot" pkg="rqt_plot" type="rqt_plot" output="screen"  args="/motor_output /motor_input /set_point/input"/>
-
 </launch>
