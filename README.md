@@ -13,8 +13,8 @@ To install this package, clone the repository into your catkin workspace and bui
 ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/OctavioRguez/Challenge-Fundamental-Robotics.git
-cd ..
 mv ./Challenge-Fundamental-Robotics ./challenge_fundamental_robotics
+cd ..
 catkin_make
 ```
 
